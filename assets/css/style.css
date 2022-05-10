@@ -82,6 +82,9 @@ h6 {
   visibility: visible;
   opacity: 1;
 }
+.social-links #mailimg :hover{
+  color: #fff;
+}
 
 /*--------------------------------------------------------------
 # Header
