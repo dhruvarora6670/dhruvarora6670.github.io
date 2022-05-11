@@ -15,6 +15,13 @@ body {
   background-size: cover;
   position: relative;
 }
+/* To hide Scroll Bar */
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+}
+
 body::before {
   content: "";
   position: absolute;
