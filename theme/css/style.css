@@ -13,7 +13,6 @@ body {
   -webkit-font-smoothing: antialiased;
   font-size: 15px;
   color: #4c4c4c;
-  
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -23,61 +22,78 @@ body {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .example {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
-
-html{
+html {
   scroll-behavior: smooth;
 }
 
-p, .paragraph {
+p,
+.paragraph {
   font-weight: 400;
   color: #4c4c4c;
   font-size: 15px;
   line-height: 1.8;
   font-family: "Roboto", sans-serif;
 }
-p-lg, .paragraph-lg {
+p-lg,
+.paragraph-lg {
   font-size: 22px;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  color:#23B5D3;font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;text-align: center;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #23b5d3;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  text-align: center;
 }
 
-h1, .h1 {
+h1,
+.h1 {
   font-size: 80px;
 }
 @media (max-width: 991px) {
-  h1, .h1 {
+  h1,
+  .h1 {
     font-size: 65px;
   }
 }
 
-h2, .h2 {
+h2,
+.h2 {
   font-size: 60px;
 }
 @media (max-width: 991px) {
-  h2, .h2 {
+  h2,
+  .h2 {
     font-size: 50px;
   }
 }
 
-h3, .h3 {
+h3,
+.h3 {
   font-size: 40px;
 }
 
-h4, .h4 {
+h4,
+.h4 {
   font-size: 22px;
 }
 
-h5, .h5 {
+h5,
+.h5 {
   font-size: 18px;
 }
 
-h6, .h6 {
+h6,
+.h6 {
   font-size: 14px;
 }
 
@@ -120,7 +136,8 @@ h6, .h6 {
 .btn-primary:hover {
   background: #542cb7;
 }
-.btn-primary.focus, .btn-primary.active {
+.btn-primary.focus,
+.btn-primary.active {
   background: #542cb7 !important;
   box-shadow: none !important;
 }
@@ -130,7 +147,8 @@ h6, .h6 {
   color: #121212;
   font-weight: bold;
 }
-.btn-transparent:active, .btn-transparent:hover {
+.btn-transparent:active,
+.btn-transparent:hover {
   color: #121212;
 }
 
@@ -424,15 +442,20 @@ textarea.form-control {
     padding: 20px;
     background: #121212;
   }
+
+  .navbar {
+    max-width: 100%;
+  }
 }
 
 ::-webkit-scrollbar {
-    width: 0px;
-    background: transparent; /* make scrollbar transparent */
+  width: 0px;
+  background: transparent; /* make scrollbar transparent */
 }
 
 .navbar .nav-item .nav-link {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   font-size: large;
   padding: 15px;
 }
@@ -526,7 +549,8 @@ textarea.form-control {
   width: 100%;
   height: 100%;
 }
-.wave::before, .wave::after {
+.wave::before,
+.wave::after {
   content: "";
   position: absolute;
   width: 800px;
@@ -537,7 +561,7 @@ textarea.form-control {
   border-radius: 45%;
   transform: translateX(-50%) rotate(0);
   -webkit-animation: rotate 6s linear infinite;
-          animation: rotate 6s linear infinite;
+  animation: rotate 6s linear infinite;
   z-index: 10;
 }
 .wave::after {
@@ -545,7 +569,7 @@ textarea.form-control {
   background-color: rgba(255, 255, 255, 0.9);
   transform: translateX(-50%) rotate(0);
   -webkit-animation: rotate 10s linear -5s infinite;
-          animation: rotate 10s linear -5s infinite;
+  animation: rotate 10s linear -5s infinite;
   z-index: 20;
 }
 
@@ -687,7 +711,7 @@ textarea.form-control {
 /* /testimonial */
 /* footer */
 .footer-section {
-  padding-top:-20%;
+  padding-top: -20%;
 }
 
 .section-on-footer {
@@ -852,7 +876,6 @@ blockquote {
   font-weight: bold;
 }
 /*# sourceMappingURL=style.css.map */
-
 
 .hero {
   font-size: clamp(40px, 10vw, 100px);
