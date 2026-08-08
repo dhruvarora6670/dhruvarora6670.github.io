@@ -6,190 +6,314 @@
     <title>Dhruv Arora</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
 </head>
 <body>
-
-    <div class="name-logo-div"><img src="./Picture_1-removebg-preview.png" class="name-logo" alt=""></div>
-
-    <nav>
-        <ul>
-            <li><a href="#">All</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Projects</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-    </nav>
-
     <script src="https://kit.fontawesome.com/ec5cf74f28.js" crossorigin="anonymous"></script>
 
-    <div class="container">
-        <div class="cell block1">
+    <div class="bento">
 
-
-            <div class="cell about" >
-
-                <img src="./memoji 2.png" class="about-image" alt="">
-                <p class="about-text">Hi, I'm <span class="name">dhruv</span>, undergrad at Manipal University Jaipur. I am intersted in Python, Data Analytics, SQL and Computer Vision.</p>
-
-
+        <!-- ① HERO — col 1-2, row 1  (text=2/3 aligns with socials+quote, img=1/3 aligns with spotify) -->
+        <div class="row1-left">
+            <div class="card c-hero-text">
+                <p class="hero-hi">hey, i'm</p>
+                <h1 class="hero-name">dhruv arora</h1>
+                <p class="hero-role">platform engineer · gcp · kubernetes</p>
+                <p class="hero-bio">Co-built a multi-tenant Internal Developer Platform on GCP / Kubernetes serving 75+ engineers — cutting deployment time from 2–3 days to 30 minutes. Currently at Techolution, Hyderabad.</p>
             </div>
-            <div class="cell social-spotify" >
-                <div class="cell socials-grid" >
-                    <div class="socials">
-                        <a href="https://www.instagram.com/dhruvish_arora"><i class="fa-brands fa-instagram social-icon"></i></a>
+            <div class="card c-hero-img">
+                <img src="./memoji.png" class="hero-memoji" alt="">
+            </div>
+        </div>
+
+        <!-- ② EXPERIENCE — col 3, row 1-2 -->
+        <div class="card c-exp">
+            <p class="card-label">experience</p>
+            <div class="tl">
+                <div class="tl-rail"></div>
+
+                <div class="tl-item">
+                    <div class="tl-dot active"></div>
+                    <div class="tl-body">
+                        <p class="tl-date">Oct 2024 – Present</p>
+                        <h3 class="tl-title">Associate AI Engineer</h3>
+                        <p class="tl-co">Techolution · Platform Infrastructure · Hyderabad</p>
+                        <p class="tl-desc">Co-built Deploy Genie — multi-tenant IDP on GCP/K8s. FastAPI orchestration, ArgoCD GitOps, custom ACL RBAC, KEDA autoscaling. Event-driven incident triaging at 5k+/hr. LLM streaming middleware cut RAG latency 40s→8s.</p>
                     </div>
-                    <div class="socials">
-                        <a href="https://www.linkedin.com/in/dhruvarora333/" class="icon"><i class="fa-brands fa-linkedin social-icon"></i></a>
-                    </div>
-                    <div class="socials"><a href="https://github.com/dhruvarora6670"><i class="fa-brands fa-square-github social-icon"></i></a></div>
-                    <div class="socials"><a href="mailto:dhruvmarora6670@gmail.com"><i class="fa-solid fa-envelope social-icon"></i></a></div>
                 </div>
-                <div class="cell spotify" >
-                        <i class="fa-brands fa-spotify spotify-icon"></i>
-                            <span><iframe src="https://lottie.host/embed/8fa97f5a-d236-42dc-8ad8-d843b17bba72/dX1SvYgABO.json"></iframe></span>
-                            <!-- <iframe src="https://lottie.host/embed/e4aa5cb5-05f6-4785-be4e-4bfaa5423526/8sXm5xqFca.json"></iframe> -->
-                            <div class="spotify-text">
-                                <p id="songName"></p>
-                                <p id="artistName"></p>
-                        </div>
+
+                <div class="tl-item">
+                    <div class="tl-dot"></div>
+                    <div class="tl-body">
+                        <p class="tl-date">Apr – Aug 2024</p>
+                        <h3 class="tl-title">Python Developer Intern</h3>
+                        <p class="tl-co">Smollan · Remote</p>
+                        <p class="tl-desc">Textract + OCR pipeline with ~95% accuracy. 15+ Flask endpoints for live kiosk analytics dashboards.</p>
+                    </div>
+                </div>
+
+                <div class="tl-item">
+                    <div class="tl-dot"></div>
+                    <div class="tl-body">
+                        <p class="tl-date">Dec 2023 – Mar 2024</p>
+                        <h3 class="tl-title">Data Analyst Intern</h3>
+                        <p class="tl-co">Ernst & Young · Delhi</p>
+                        <p class="tl-desc">SQL clickstream analysis to surface suspicious exam behaviour. KD-Tree face comparison engine enabling 60B+ pairwise operations.</p>
+                    </div>
+                </div>
+
+                <div class="tl-item">
+                    <div class="tl-dot"></div>
+                    <div class="tl-body">
+                        <p class="tl-date">2021 – 2025</p>
+                        <h3 class="tl-title">B.Tech – Information Technology</h3>
+                        <p class="tl-co">Manipal University Jaipur · CGPA 8.17</p>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="cell block2">
-            <div class="block2col1">
-                <div class="quote">
-                    <div class="quote-heading">quote</div>
-                    <div class="quote-div">
-                        <div id="quote"></div>
-                    </div>
-                    <div class="buttons">
-                        <button onclick="showPreviousQuote()"><i class="fa-solid fa-chevron-left left-button"></i></button>
-                        <button onclick="showNextQuote()"><i class="fa-solid fa-chevron-right right-button"></i></button>
-                    </div>
-                </div>
-                <div class="resume-lorem">
-                    <div class="resume"><a href="http://" class="resume-link">resume</a></div>
-                    <div class="lorem">
 
-                        <div class="logos">
-                            <div class="logos-slide">
-                                <img src="./logos/html5.png" alt="">
-                                <img src="./logos/css3.png" alt="">
-                                <img src="./logos/Javascript_badge.svg.png" alt="">
-                                <img src="./logos/c.png" alt="">
-                                <img src="./logos/c++.png" alt="">
-                                <img src="./logos/Python-logo-notext.svg.png" alt="">
-                                <img src="./logos/pandas.png" alt="">
-                                <img src="./logos/matplotlib.png" alt="">
-                                <img src="./logos/Anaconda_Logo.png" alt="">
-                                <img src="./logos/SQL.png" alt="">
-                                <img src="./logos/Mysql_logo.png" alt="">
-                                <img src="./logos/postgresql.png" alt="">
-                                <img src="./logos/swift.png" alt="">
-                            </div>
-                            <div class="logos-slide">
-                                <img src="./logos/html5.png" alt="">
-                                <img src="./logos/css3.png" alt="">
-                                <img src="./logos/Javascript_badge.svg.png" alt="">
-                                <img src="./logos/c.png" alt="">
-                                <img src="./logos/c++.png" alt="">
-                                <img src="./logos/Python-logo-notext.svg.png" alt="">
-                                <img src="./logos/pandas.png" alt="">
-                                <img src="./logos/matplotlib.png" alt="">
-                                <img src="./logos/Anaconda_Logo.png" alt="">
-                                <img src="./logos/SQL.png" alt="">
-                                <img src="./logos/Mysql_logo.png" alt="">
-                                <img src="./logos/postgresql.png" alt="">
-                                <img src="./logos/swift.png" alt="">
-                            </div>
-                            </div>
-                    </div>
+        <!-- ③④⑤ SOCIALS + QUOTE + SPOTIFY — col 1-2, row 2 (inside transparent wrapper) -->
+        <div class="row2-left">
+
+        <!-- SOCIALS -->
+        <div class="card c-socials">
+            <a href="https://www.instagram.com/dhruvish_arora" target="_blank" class="soc-btn"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.linkedin.com/in/dhruvarora333/"  target="_blank" class="soc-btn"><i class="fa-brands fa-linkedin"></i></a>
+            <a href="https://github.com/dhruvarora6670"           target="_blank" class="soc-btn"><i class="fa-brands fa-square-github"></i></a>
+            <a href="mailto:dhruvmarora6670@gmail.com"                            class="soc-btn"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+
+        <!-- QUOTE -->
+        <div class="card c-quote">
+            <p class="card-label">quote</p>
+            <p id="quote" class="qt-body"></p>
+            <div class="qt-nav">
+                <button onclick="showPreviousQuote()"><i class="fa-solid fa-chevron-left"></i></button>
+                <button onclick="showNextQuote()"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        <!-- SPOTIFY -->
+        <div class="card c-spotify">
+            <div class="sp-header">
+                <p class="sp-label" id="spLabel">last played</p>
+                <div class="sp-right">
+                    <div class="sp-bars"><span></span><span></span><span></span><span></span></div>
+                    <i class="fa-brands fa-spotify sp-logo"></i>
                 </div>
             </div>
-            <div class="block2col2">experience</div>
+            <div class="sp-body">
+                <div class="sp-track">
+                    <p id="songName">loading...</p>
+                    <p id="artistName"></p>
+                </div>
+            </div>
         </div>
-        <div class="cell block3">
-            <div class="projects">Projects</div>
-            <div class="contact-form">Contact</div>
+
+        </div><!-- /row2-left -->
+
+        <!-- ⑥ SKILLS — full width, row 3 -->
+        <div class="card c-skills">
+            <div class="chips">
+                <span class="chip">python</span>
+                <span class="chip">kubernetes</span>
+                <span class="chip">gcp</span>
+                <span class="chip">docker</span>
+                <span class="chip">fastapi</span>
+                <span class="chip">argocd</span>
+                <span class="chip">helm</span>
+                <span class="chip">pub/sub</span>
+                <span class="chip">kyverno</span>
+                <span class="chip">keda</span>
+                <span class="chip">mongodb</span>
+                <span class="chip">postgresql</span>
+                <span class="chip">redis</span>
+                <span class="chip">vertex ai</span>
+                <span class="chip">flask</span>
+                <span class="chip">bash</span>
+                <span class="chip">bigquery</span>
+                <span class="chip">aws</span>
+                <span class="chip">asyncio</span>
+            </div>
+        </div>
+
+        <!-- ⑦ PROJECT 1 — row 5 -->
+        <div class="card c-proj">
+            <div class="proj-tags">
+                <span class="tag">python</span><span class="tag">kubernetes</span><span class="tag">argocd</span><span class="tag">gcp</span>
+            </div>
+            <h3 class="proj-name">deploy genie</h3>
+            <p class="proj-desc">Multi-tenant IDP on GCP/K8s. FastAPI orchestration: CI setup, K8s provisioning, ArgoCD GitOps, custom RBAC, and KEDA autoscaling in one self-serve workflow.</p>
+            <p class="proj-stat">2–3 days → 30 min &nbsp;·&nbsp; 75+ engineers &nbsp;·&nbsp; 500+ deployments</p>
+        </div>
+
+        <!-- ⑧ PROJECT 2 — row 5 -->
+        <div class="card c-proj">
+            <div class="proj-tags">
+                <span class="tag">vertex ai</span><span class="tag">fastapi</span><span class="tag">asyncio</span>
+            </div>
+            <h3 class="proj-name">llm streaming middleware</h3>
+            <p class="proj-desc">Reusable streaming layer on Vertex AI with custom chunking and buffer orchestration. Eliminated full-response buffering on a production RAG chatbot.</p>
+            <p class="proj-stat">40s → 8s end-to-end latency</p>
+        </div>
+
+        <!-- ⑨ PROJECT 3 — row 5 -->
+        <div class="card c-proj">
+            <div class="proj-tags">
+                <span class="tag">fastapi</span><span class="tag">pub/sub</span><span class="tag">postgresql</span>
+            </div>
+            <h3 class="proj-name">incident triaging system</h3>
+            <p class="proj-desc">Distributed multi-tenant triaging integrating Slack/Teams with Jira and ServiceNow. Severity classification, escalation workflows, durable event-driven processing.</p>
+            <p class="proj-stat">5,000+ events/hr &nbsp;·&nbsp; load tested</p>
+        </div>
+
+        <!-- ⑩ CHAT — col 1-2, row 6 -->
+        <div class="card c-chat">
+            <div class="chat-header">
+                <div class="chat-header-left">
+                    <div class="chat-avatar">D</div>
+                    <div>
+                        <p class="chat-title">chat with dhruv</p>
+                        <p class="chat-sub">ask me about my work, stack, or anything</p>
+                    </div>
+                </div>
+                <span class="chat-badge">AI · coming soon</span>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="msg msg-dhruv">
+                    <div class="msg-bubble">Hey! I'm Dhruv. Ask me about Deploy Genie, the IDP I built — or anything else about my work and experience. 👋</div>
+                </div>
+                <div class="msg msg-user">
+                    <div class="msg-bubble">What's the most impactful thing you've built?</div>
+                </div>
+                <div class="msg msg-dhruv">
+                    <div class="msg-bubble">Probably Deploy Genie — a multi-tenant Internal Developer Platform that went from 0 to serving 75+ engineers across 10 teams. Reduced deployments from 2–3 days to 30 minutes. Built the whole provisioning engine, GitOps pipeline, RBAC, and autoscaling abstractions from scratch.</div>
+                </div>
+            </div>
+
+            <form class="chat-input-row" id="chatForm" onsubmit="handleChat(event)">
+                <input id="chatInput" class="chat-input" type="text" placeholder="ask about my experience, stack, projects..." autocomplete="off">
+                <button type="submit" class="chat-send"><i class="fa-solid fa-paper-plane"></i></button>
+            </form>
+        </div>
+
+        <!-- ⑪ CONTACT + RESUME — col 3, row 6 -->
+        <div class="card c-info">
+            <a href="./Dhruv_Arora_Resume.pdf" target="_blank" class="res-btn">
+                <i class="fa-solid fa-file-arrow-down"></i>resume
+            </a>
+            <div class="info-divider"></div>
+            <div class="info-links">
+                <a href="mailto:dhruvmarora6670@gmail.com" class="info-item">
+                    <i class="fa-solid fa-envelope"></i><span>dhruvmarora6670@gmail.com</span>
+                </a>
+                <a href="https://www.linkedin.com/in/dhruvarora333/" target="_blank" class="info-item">
+                    <i class="fa-brands fa-linkedin"></i><span>/dhruvarora333</span>
+                </a>
+                <a href="https://github.com/dhruvarora6670" target="_blank" class="info-item">
+                    <i class="fa-brands fa-github"></i><span>dhruvarora6670</span>
+                </a>
+            </div>
+            <p class="info-loc"><i class="fa-solid fa-location-dot"></i>Ahmedabad, Gujarat</p>
         </div>
 
     </div>
+
+    <script>
+        /* ── Last.fm now playing ── */
+        fetch('https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=dhruv6670&api_key=ce2c9b17954849fdfae4c2309d1898c2&format=json')
+            .then(r => r.json())
+            .then(d => {
+                const t = d.recenttracks.track[0];
+                const isNow = t['@attr'] && t['@attr'].nowplaying === 'true';
+                document.getElementById('spLabel').textContent = isNow ? 'now playing' : 'last played';
+                document.getElementById('songName').textContent = t.name;
+                document.getElementById('artistName').textContent = t.artist['#text'];
+            })
+            .catch(() => { document.getElementById('songName').textContent = 'nothing playing'; });
+
+        /* ── Quotes ── */
+        const quotes = [
+            "Winners don't make excuses when the other side plays the game.",
+            "I don't play the odds, I play the man.",
+            "I'm against having emotions, not using them.",
+            "I don't have dreams, I have goals.",
+            "Sometimes the good guys gotta do bad things to make the bad guys pay.",
+            "You always have a choice.",
+            "When you're backed against the wall, break the goddamn thing down.",
+            "I'm not about caring, I'm about winning.",
+            "Life is a game, play to win.",
+            "Winners are willing to do what losers won't.",
+            "It's not bragging if it's true.",
+            "Don't raise your voice, improve your argument.",
+            "It's not enough to have talent, you also have to be hungry.",
+            "Don't watch the clock; do what it does. Keep going.",
+            "Opportunities don't happen, you create them.",
+            "Welcome to the real world. It sucks. You're gonna love it."
+        ];
+        let qi = new Date().getHours() % quotes.length;
+        const updateQ = () => document.getElementById('quote').textContent = quotes[qi];
+        const showPreviousQuote = () => { qi = (qi - 1 + quotes.length) % quotes.length; updateQ(); };
+        const showNextQuote   = () => { qi = (qi + 1) % quotes.length; updateQ(); };
+        updateQ();
+
+        /* ── Chat ── */
+        const canned = [
+            { k: ['deploy','genie','idp','platform'],
+              r: "Deploy Genie is the IDP I co-built at Techolution — a self-serve provisioning engine on GCP/K8s. It handles CI setup, Kubernetes resource creation, ArgoCD GitOps handoff, and custom RBAC in one workflow. Went from 2–3 day deployments to 30 minutes for 75+ engineers." },
+            { k: ['gcp','kubernetes','k8s','argocd','helm','keda','kyverno'],
+              r: "I've worked deeply with GCP (GKE, Cloud Build, Pub/Sub, Vertex AI, Artifact Registry) and Kubernetes (ArgoCD, Kyverno, KEDA, Helm). Happy to go deep on any of these." },
+            { k: ['llm','ai','ml','vertex','rag','streaming'],
+              r: "I built LLM streaming middleware on Vertex AI that cut RAG response latency from ~40s to 8s. The key was eliminating full-response buffering with custom chunking and buffer orchestration." },
+            { k: ['incident','triag','slack','jira'],
+              r: "I architected a distributed multi-tenant incident triaging system integrating Slack/Teams with Jira and ServiceNow using FastAPI and GCP Pub/Sub. It handled 5,000+ events/hour under load testing." },
+            { k: ['experience','work','job','intern','role'],
+              r: "I've worked at Techolution (platform infra · current), Smollan (Python/data pipelines), and Ernst & Young (data analytics). My current work at Techolution is the most impactful — production infra used daily by 75+ engineers." },
+            { k: ['education','university','college','manipal','degree','cgpa'],
+              r: "I graduated from Manipal University Jaipur with a B.Tech in IT (CGPA 8.17) in July 2025. I was also Placement Coordinator and Treasurer of the ACM Student Chapter there." },
+        ];
+
+        function getReply(msg) {
+            const m = msg.toLowerCase();
+            for (const c of canned) {
+                if (c.k.some(k => m.includes(k))) return c.r;
+            }
+            return "Great question! Full AI chat is coming soon — I'm training it on my actual experience. For now, try asking about Deploy Genie, my tech stack, or specific roles I've held. Or just email me at dhruvmarora6670@gmail.com 🚀";
+        }
+
+        function appendMsg(text, side) {
+            const box = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = `msg msg-${side}`;
+            div.innerHTML = `<div class="msg-bubble">${text}</div>`;
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function appendTyping() {
+            const box = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = 'msg msg-dhruv typing-wrap';
+            div.innerHTML = '<div class="msg-bubble typing"><span></span><span></span><span></span></div>';
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+            return div;
+        }
+
+        function handleChat(e) {
+            e.preventDefault();
+            const inp = document.getElementById('chatInput');
+            const msg = inp.value.trim();
+            if (!msg) return;
+            inp.value = '';
+            appendMsg(msg, 'user');
+            const typing = appendTyping();
+            setTimeout(() => {
+                typing.remove();
+                appendMsg(getReply(msg), 'dhruv');
+            }, 900 + Math.random() * 600);
+        }
+    </script>
 </body>
-<script>
-    const apiKey = 'ce2c9b17954849fdfae4c2309d1898c2';
-    const username = 'dhruv6670';
-    const apiUrl = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json`;
-    fetch(apiUrl)
-    .then(response => response.json())
-    .then(data => {
-        const track = data.recenttracks.track[0];
-        const artist = track.artist['#text'];
-        const trackName = track.name;
-        document.getElementById('songName').textContent = trackName;
-        document.getElementById('artistName').textContent = artist;
-    })
-    .catch(error => {
-        console.error('Error fetching data:', error);
-    });
-
-
-    const quotes = [
-        "Winners don't make excuses when the other side plays the game.",
-        "I don't play the odds, I play the man.",
-        "I'm against having emotions, not using them.",
-        "I don't have dreams, I have goals.",
-        "Sometimes the good guys gotta do bad things to make the bad guys pay.",
-        "You always have a choice.",
-        "When you're backed against the wall, break the goddamn thing down.",
-        "I'm not about caring, I'm about winning.",
-        "I'm not interested in great, I want to know who its daddy is.",
-        "Life is a game, play to win.",
-        "Winners are willing to do what losers won't.",
-        "When you're in a fight, you fight dirty.",
-        "It's not bragging if it's true.",
-        "Don't raise your voice, improve your argument.",
-        "Sometimes good guys gotta do bad things to make the bad guys pay.",
-        "It's not enough to have talent, you also have to be hungry.",
-        "Your limitation—it's only your imagination.",
-        "Don't watch the clock; do what it does. Keep going.",
-        "Opportunities don't happen, you create them.",
-        "Welcome to the real world. It sucks. You’re gonna love it."
-    ];
-
-  // Function to update the displayed quote every hour
-    function updateQuoteHour() {
-    const now = new Date();
-    const hour = now.getHours();
-    const quoteIndex = hour % quotes.length;
-    document.getElementById('quote').textContent = quotes[quoteIndex];
-    }
-    
-    let currentQuoteIndex = 0;
-
-function updateQuote() {
-    document.getElementById('quote').textContent = quotes[currentQuoteIndex];
-}
-
-function showPreviousQuote() {
-    currentQuoteIndex = (currentQuoteIndex - 1 + quotes.length) % quotes.length;
-    updateQuote();
-}
-
-function showNextQuote() {
-    currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
-    updateQuote();
-}
-
-// Initial call to update the quote
-    updateQuote();
-
-  // Initial call to update the quote
-    updateQuoteHour();
-
-  // Update the quote every hour
-    setInterval(updateQuote, 3600000); // 3600000 milliseconds = 1 hour
-
-</script>
 </html>
-
