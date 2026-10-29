@@ -1,0 +1,11 @@
+{
+  "name": "portfolio-layout-check",
+  "private": true,
+  "description": "Browser check that the portfolio never scrolls sideways and its menu and theme toggle work.",
+  "scripts": {
+    "check": "node check-layout.cjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.0"
+  }
+}

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page not found · Dhruv Arora</title>
+  <meta name="robots" content="noindex">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&amp;family=IBM+Plex+Sans:wght@400;600;700&amp;display=swap">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
+  <!-- Self-contained on purpose: GitHub Pages serves this file at any missing address,
+       so relative links to the stylesheet would break on nested paths. -->
+  <style>
+    :root {
+      --bg: #FFFFFF; --ink: #0A0A0A; --body: #404040; --muted: #636363; --dot: #D9D9D9;
+      --accent: #0F766E; --accent-bg: #0F766E; --accent-bg-hover: #115E59; --accent-ink: #FFFFFF;
+      --accent-2-line: #EA580C;
+      color-scheme: light;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0A0A0A; --ink: #FAFAFA; --body: #D4D4D4; --muted: #A3A3A3; --dot: #232323;
+        --accent: #2DD4BF; --accent-bg: #14B8A6; --accent-bg-hover: #2DD4BF; --accent-ink: #0A0A0A;
+        --accent-2-line: #F97316;
+        color-scheme: dark;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #0A0A0A; --ink: #FAFAFA; --body: #D4D4D4; --muted: #A3A3A3; --dot: #232323;
+      --accent: #2DD4BF; --accent-bg: #14B8A6; --accent-bg-hover: #2DD4BF; --accent-ink: #0A0A0A;
+      --accent-2-line: #F97316;
+      color-scheme: dark;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { overflow-x: clip; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 48px clamp(20px, 5vw, 64px);
+      background-color: var(--bg);
+      background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
+      background-size: 22px 22px;
+      color: var(--ink);
+      font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: 1.0625rem;
+      line-height: 1.6;
+    }
+    main { width: 100%; max-width: 560px; }
+    .eyebrow {
+      margin: 0 0 16px;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .broken { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
+    .broken span:not(.gap) {
+      padding: 5px 10px; border-radius: 6px; border: 1px solid var(--dot);
+      font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.8125rem; color: var(--body);
+    }
+    .broken .gap { width: 64px; height: 2px; background-image: linear-gradient(90deg, var(--accent-2-line) 55%, transparent 0); background-size: 8px 2px; opacity: 0.6; }
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 6vw, 3rem);
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      text-wrap: balance;
+    }
+    p { margin: 16px 0 0; color: var(--body); }
+    a.btn {
+      margin-top: 28px;
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 18px;
+      border-radius: 8px;
+      background: var(--accent-bg);
+      color: var(--accent-ink);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    a.btn:hover { background: var(--accent-bg-hover); }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    /* Same desktop step down as the "Desktop type scale" in assets/css/site.css. */
+    @media (min-width: 901px) {
+      body { font-size: 1rem; }
+      h1 { font-size: clamp(2rem, 6vw, 2.625rem); }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Error 404</p>
+    <div class="broken" aria-hidden="true"><span>you</span><span class="gap"></span><span>this page</span></div>
+    <h1>This link doesn’t connect to anything.</h1>
+    <p>The page may have moved, or the address has a typo.</p>
+    <a class="btn" href="/">Back to the homepage</a>
+  </main>
+</body>
+</html>
