@@ -142,9 +142,9 @@ function findOverflow() {
         }
 
         if (pageName === 'index.html') {
-          // 2. First screen fills the window (clamped between 560px and 1000px tall).
+          // 2. First screen fills the window (at least 560px tall).
           const hero = await page.evaluate(() => document.getElementById('top').getBoundingClientRect().height);
-          const expected = Math.min(Math.max(560, height), 1000);
+          const expected = Math.max(560, height);
           checks++;
           if (Math.abs(hero - expected) > 1) fail(`first screen is ${hero}px tall, expected ${expected}px`);
 

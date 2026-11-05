@@ -499,9 +499,10 @@ a {
 }
 
 /* ---------------------------------------------------------------- Hero (first screen) */
+/* Fills the whole window at any height (tall 4K screens included), never shorter than 560px. */
 .hero {
-  min-height: clamp(560px, 100vh, 1000px);
-  min-height: clamp(560px, 100svh, 1000px);
+  min-height: max(560px, 100vh);
+  min-height: max(560px, 100svh);
   display: flex;
   flex-direction: column;
   padding-top: var(--header-h);
