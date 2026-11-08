@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I got past Cloud Build’s 600-trigger limit · Dhruv Arora</title>
+  <meta name="description" content="Why trigger-based CI hits a wall, and the GitHub App → Pub/Sub → expander design that replaced it.">
+  <meta name="author" content="Dhruv Arora">
+  <link rel="canonical" href="https://dhruv-arora.com/blog/cloud-build-trigger-limit.html">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Dhruv Arora">
+  <meta property="og:title" content="How I got past Cloud Build’s 600-trigger limit">
+  <meta property="og:description" content="Why trigger-based CI hits a wall, and the GitHub App → Pub/Sub → expander design that replaced it.">
+  <meta property="og:url" content="https://dhruv-arora.com/blog/cloud-build-trigger-limit.html">
+  <meta property="og:image" content="https://dhruv-arora.com/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+  <link rel="stylesheet" href="../assets/css/site.css">
+  <script>
+    (function () {
+      var d = document.documentElement;
+      d.classList.add('js');
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') d.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
+  <script src="../assets/js/site.js" defer></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "How I got past Cloud Build’s 600-trigger limit",
+    "description": "Why trigger-based CI hits a wall, and the GitHub App → Pub/Sub → expander design that replaced it.",
+    "datePublished": "2026-11-08",
+    "author": { "@type": "Person", "name": "Dhruv Arora", "url": "https://dhruv-arora.com/" },
+    "mainEntityOfPage": "https://dhruv-arora.com/blog/cloud-build-trigger-limit.html"
+  }
+  </script>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-back" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 8H3M7 4L3 8l4 4"/></symbol>
+    <symbol id="i-external" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l6-6M6 5h5v5"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="header-bar wide">
+      <a class="brand" href="../">Dhruv Arora</a>
+      <div class="header-actions">
+        <nav class="nav-desktop" aria-label="Primary">
+          <a href="../#systems">Systems</a>
+          <a href="../#experience">Experience</a>
+          <a href="../#stack">Stack</a>
+          <a href="../#case-study">Case study</a>
+          <a href="../#blog">Blog</a>
+          <a class="nav-resume" href="../assets/Dhruv_Arora_Resume.pdf" target="_blank" rel="noopener">Résumé<svg width="12" height="12" aria-hidden="true" focusable="false"><use href="#i-external"/></svg><span class="sr-only"> (PDF, opens in a new tab)</span></a>
+        </nav>
+        <button class="icon-btn theme-toggle" type="button" aria-label="Switch to dark theme">
+          <svg class="icon-moon" width="18" height="18" aria-hidden="true" focusable="false"><use href="#i-moon"/></svg>
+          <svg class="icon-sun" width="18" height="18" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg>
+        </button>
+        <button class="icon-btn menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu">
+          <svg class="icon-menu" width="18" height="18" aria-hidden="true" focusable="false"><use href="#i-menu"/></svg>
+          <svg class="icon-close" width="18" height="18" aria-hidden="true" focusable="false"><use href="#i-close"/></svg>
+        </button>
+      </div>
+    </div>
+    <nav class="nav-mobile wide" id="mobile-menu" aria-label="Mobile" hidden>
+      <a href="../#systems">Systems</a>
+      <a href="../#experience">Experience</a>
+      <a href="../#stack">Stack</a>
+      <a href="../#case-study">Case study</a>
+      <a href="../#blog">Blog</a>
+      <a href="../assets/Dhruv_Arora_Resume.pdf" target="_blank" rel="noopener">Résumé (PDF)<span class="sr-only">, opens in a new tab</span></a>
+    </nav>
+  </header>
+
+  <main id="main" class="post-page">
+    <article>
+      <header class="post-header container">
+        <a class="back-link" href="../#blog"><svg width="14" height="14" aria-hidden="true" focusable="false"><use href="#i-back"/></svg>All posts</a>
+        <p class="post-meta"><time datetime="2026-11-08">Nov 8, 2026</time><span aria-hidden="true">·</span><span>8 min read</span></p>
+        <h1>How I got past Cloud Build’s 600-trigger limit</h1>
+        <p class="post-summary">Why trigger-based CI hits a wall, and the GitHub App → Pub/Sub → expander design that replaced it.</p>
+      </header>
+
+      <div class="container">
+        <div class="prose">
+          <p>I co-architected an internal developer platform (IDP) on GCP and Kubernetes that 150 engineers across 10+ teams deploy with. Its CI was trigger-based: every deployment registered its own Cloud Build trigger. Then our dev GCP project hit Cloud Build’s limit of 600 triggers. A new deployment needs a new trigger, so a project at the limit can’t take another deployment. The usual fix for a quota problem is a quota increase, and this limit doesn’t have one. I had to change how builds start.</p>
+
+          <h2>The constraint</h2>
+          <p>Cloud Build’s <a href="https://docs.cloud.google.com/build/quotas">quotas page</a> lists “Number of build triggers” at 600 under its resource limits, and it describes system limits as “fixed values that can’t be changed.” The limit applies per GCP project.</p>
+          <p>The limit counts every trigger in the project, including the ones a platform didn’t create. Each environment on our platform has its own GCP project, so its deployments shared those 600 slots with whatever else was there. Our dev project is the one that hit the limit, and it has only around 300 deployments today. The rest of the count was manually created triggers, made for other reasons or from before the platform existed. Some deprecated triggers were already disabled, and that slack bought us time. It didn’t change the maths. Every new deployment still cost one trigger from the same 600, so the count kept climbing toward a number that would never move.</p>
+
+          <h2>What I tried first</h2>
+          <p>My first idea was a quota increase. Then I found out that 600 is the maximum, with no increase path. I looked at two other options before designing something new.</p>
+          <p><strong>Sharding triggers across projects.</strong> The limit is per project, so more projects would mean more triggers. It would have taken too much migration, and each new project would only have added another 600. It also did nothing for the approval gating we needed, with rules per environment and PR summaries in the approver’s inbox.</p>
+          <p><strong>GitHub Actions.</strong> Actions brings a different kind of cost and a different setup, and it’s one more tool for the team to learn. We already knew Cloud Build. We also wanted CI that developers never have to think about: they push, and the rest happens in the background.</p>
+          <p><strong>One queue in front of the build endpoint.</strong> My first design for the new pipeline had a single hop. The webhook published to Pub/Sub, and a push subscription called the build endpoint. Monorepos were the problem. One push to one branch can affect many deployments, and if a single endpoint starts all of them, one failure retries the whole batch. So I added a service in the middle to split each push by deployment.</p>
+
+          <h2>What worked</h2>
+          <p>A Cloud Build trigger does two jobs. It matches a push to a repo and branch, and it starts a build with the right configuration. Our platform already knew every deployment, its repo and branch, and its build settings, so it could do both jobs itself. Cloud Build doesn’t need a trigger to run a build: its <a href="https://docs.cloud.google.com/build/docs/api/reference/rest/v1/projects.builds/create">API</a> accepts one directly. The 600 limit counts triggers, so a platform that starts its own builds bypasses it.</p>
+          <p>I designed a pipeline that receives every push, works out which deployments it affects, and starts their builds through the API.</p>
+
+          <figure>
+          <div style="display:flex;flex-wrap:wrap;gap:28px">
+          <svg viewBox="0 0 320 608" role="img" aria-label="Before. A git push fires matching Cloud Build triggers. Each deployment holds one of 600 trigger slots per GCP project, shared with every other trigger in the project. Once they run out, the next deployment has no slot left." style="flex:1 1 280px;min-width:0;max-width:360px;height:auto">
+            <defs>
+            <marker id="cb-before-grey" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L8 4 L0 8 z" fill="var(--muted)"/></marker>
+            <marker id="cb-before-orange" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L8 4 L0 8 z" fill="var(--accent-2)"/></marker>
+            <pattern id="cb-slot" x="28" y="102" width="11" height="11" patternUnits="userSpaceOnUse"><rect width="9" height="9" rx="1.5" fill="var(--muted)" fill-opacity="0.55"/></pattern>
+            </defs>
+            <text x="0" y="14" font-size="13" fill="var(--ink)" font-weight="700">Before: one trigger per deployment</text>
+            <rect x="100" y="28" width="120" height="34" rx="8" fill="var(--card)" stroke="var(--line-2)" stroke-width="1.25"/>
+            <text x="160" y="49.5" font-size="13" fill="var(--ink)" font-weight="500" text-anchor="middle" font-family="var(--font-mono)">git push</text>
+            <line x1="160" y1="62" x2="160" y2="96" stroke="var(--muted)" stroke-width="1.25" marker-end="url(#cb-before-grey)"/>
+            <text x="168" y="84" font-size="11.5" fill="var(--muted)">fires matching triggers</text>
+            <rect x="28" y="102" width="264" height="275" fill="url(#cb-slot)"/>
+            <text x="112" y="398" font-size="13" fill="var(--ink)" font-weight="600">600 per GCP project</text>
+            <text x="112" y="414" font-size="11.5" fill="var(--muted)">can’t be changed</text>
+            <text x="112" y="430" font-size="11.5" fill="var(--muted)">shared with other triggers</text>
+            <line x1="92" y1="379" x2="92" y2="568" stroke="var(--muted)" stroke-width="1.25" marker-end="url(#cb-before-grey)"/>
+            <text x="100" y="558" font-size="11.5" fill="var(--muted)">starts builds</text>
+            <line x1="270" y1="446" x2="270" y2="383" stroke="var(--accent-2)" stroke-width="1.25" stroke-dasharray="4 3"/>
+            <line x1="262" y1="383" x2="278" y2="383" stroke="var(--accent-2)" stroke-width="2"/>
+            <rect x="198" y="446" width="121" height="50" rx="8" fill="var(--card)" stroke="var(--accent-2)" stroke-width="1.25" stroke-dasharray="4 3"/>
+            <text x="258.5" y="468.0" font-size="13" fill="var(--accent-2)" font-weight="600" text-anchor="middle">Next deployment</text>
+            <text x="258.5" y="484.0" font-size="11.5" fill="var(--muted)" text-anchor="middle">no slot left</text>
+            <rect x="1" y="572" width="182" height="34" rx="8" fill="var(--card)" stroke="var(--line-2)" stroke-width="1.25"/>
+            <text x="92.0" y="593.5" font-size="13" fill="var(--ink)" font-weight="600" text-anchor="middle">Cloud Build runs the build</text>
+          </svg>
+          <svg viewBox="0 0 320 608" role="img" aria-label="After. A git push reaches a FastAPI webhook receiver through a GitHub App and is published to Pub/Sub. A push subscription delivers it to the expander, which finds every deployment watching the repo and branch and publishes one message per deployment to a second Pub/Sub topic, ordered per deployment. A push subscription delivers each message to the build service, which returns a 4xx if the deployment is busy or a check fails, and Pub/Sub retries. After 45 delivery attempts a message goes to a dead-letter queue. If the environment requires it, an approval gate runs before any build. A direct API call then starts the build in Cloud Build, with no trigger on the path." style="flex:1 1 280px;min-width:0;max-width:360px;height:auto">
+            <defs>
+            <marker id="cb-after-grey" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L8 4 L0 8 z" fill="var(--muted)"/></marker>
+            <marker id="cb-after-orange" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L8 4 L0 8 z" fill="var(--accent-2)"/></marker>
+            </defs>
+            <text x="0" y="14" font-size="13" fill="var(--ink)" font-weight="700">After: one pipeline, no triggers</text>
+            <rect x="100" y="28" width="120" height="34" rx="8" fill="var(--card)" stroke="var(--line-2)" stroke-width="1.25"/>
+            <text x="160" y="49.5" font-size="13" fill="var(--ink)" font-weight="500" text-anchor="middle" font-family="var(--font-mono)">git push</text>
+            <line x1="160" y1="62" x2="160" y2="88" stroke="var(--muted)" stroke-width="1.25" marker-end="url(#cb-after-grey)"/>
+            <text x="168" y="81" font-size="11.5" fill="var(--muted)">GitHub App webhook</text>
+            <rect x="40" y="92" width="240" height="34" rx="8" fill="var(--card)" stroke="var(--line-2)" stroke-width="1.25"/>
+            <text x="160.0" y="113.5" font-size="13" fill="var(--ink)" font-weight="600" text-anchor="middle">Webhook receiver (FastAPI)</text>
+            <line x1="160" y1="126" x2="160" y2="152" stroke="var(--muted)" stroke-width="1.25" marker-end="url(#cb-after-grey)"/>
+            <text x="168" y="145" font-size="11.5" fill="var(--muted)">publishes the event</text>
+            <rect x="40" y="156" width="240" height="34" rx="17" fill="var(--surface)" stroke="var(--line-2)" stroke-width="1.25"/>
+            <text x="160.0" y="177.5" font-size="13" fill="var(--ink)" font-weight="600" text-anchor="middle">Pub/Sub: push events</text>
+            <line x1="160" y1="190" x2="160" y2="216" stroke="var(--muted)" stroke-width="1.25" marker-end="url(#cb-after-grey)"/>
+            <text x="168" y="209" font-size="11.5" fill="var(--muted)">push subscription</text>
+            <rect x="1" y="220" width="318" height="50" rx="8" fill="var(--card)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="160.0" y="242.0" font-size="13" fill="var(--ink)" font-weight="600" text-anchor="middle">Expander</text>
+            <text x="160.0" y="258.0" font-size="11.5" fill="var(--muted)" text-anchor="middle">finds every deployment watching the repo + branch</text>
+            <line x1="160" y1="270" x2="160" y2="296" stroke="var(--muted)" stroke-width="1.25" marker-end="url(#cb-after-grey)"/>
+            <text x="168" y="289" font-size="11.5" fill="var(--muted)">one per deployment</text>
+            <rect x="1" y="300" width="318" height="84" rx="12" fill="var(--surface)" stroke="var(--line-2)" stroke-width="1.25"/>
+            <text x="160" y="321" font-size="13" fill="var(--ink)" font-weight="600" text-anchor="middle">Pub/Sub: ordered per deployment</text>
+            <rect x="10" y="334" width="90" height="34" rx="17" fill="var(--card)" stroke="var(--line-2)" stroke-width="1.25"/>
+            <text x="55.0" y="355" font-size="11.5" fill="var(--muted)" font-weight="500" text-anchor="middle">deployment 1</text>
+            <rect x="108" y="334" width="90" height="34" rx="17" fill="var(--card)" stroke="var(--line-2)" stroke-width="1.25"/>
+            <text x="153.0" y="355" font-size="11.5" fill="var(--muted)" font-weight="500" text-anchor="middle">deployment 2</text>
+            <rect x="206" y="334" width="104" height="34" rx="17" fill="var(--card)" stroke="var(--accent)" stroke-width="1.25"/>
+            <text x="258.0" y="355" font-size="11.5" fill="var(--accent)" font-weight="600" text-anchor="middle">next deployment</text>
+            <line x1="40" y1="384" x2="40" y2="422" stroke="var(--muted)" stroke-width="1.25" marker-end="url(#cb-after-grey)"/>
+            <text x="46" y="409" font-size="11.5" fill="var(--muted)">delivers</text>
+            <line x1="120" y1="426" x2="120" y2="388" stroke="var(--muted)" stroke-width="1.25" marker-end="url(#cb-after-grey)"/>
+            <text x="126" y="409" font-size="11.5" fill="var(--muted)">4xx if busy or a check fails</text>
+            <rect x="1" y="426" width="182" height="34" rx="8" fill="var(--card)" stroke="var(--line-2)" stroke-width="1.25"/>
+            <text x="92.0" y="447.5" font-size="13" fill="var(--ink)" font-weight="600" text-anchor="middle">Build service</text>
+            <line x1="296" y1="384" x2="296" y2="422" stroke="var(--accent-2)" stroke-width="1.25" marker-end="url(#cb-after-orange)" stroke-dasharray="4 3"/>
+            <rect x="198" y="426" width="121" height="62" rx="8" fill="var(--card)" stroke="var(--accent-2)" stroke-width="1.25" stroke-dasharray="4 3"/>
+            <text x="258.5" y="444" font-size="12.5" fill="var(--accent-2)" font-weight="600" text-anchor="middle">Dead-letter queue</text>
+            <text x="258.5" y="460" font-size="11.5" fill="var(--muted)" text-anchor="middle">after 45 attempts</text>
+            <text x="258.5" y="476" font-size="11.5" fill="var(--muted)" text-anchor="middle">monitored manually</text>
+            <line x1="92" y1="460" x2="92" y2="486" stroke="var(--muted)" stroke-width="1.25" marker-end="url(#cb-after-grey)"/>
+            <text x="100" y="479" font-size="11.5" fill="var(--muted)">before any build</text>
+            <rect x="1" y="490" width="182" height="46" rx="8" fill="var(--card)" stroke="var(--line-2)" stroke-width="1.25" stroke-dasharray="4 3"/>
+            <text x="92.0" y="510.0" font-size="13" fill="var(--ink)" font-weight="600" text-anchor="middle">Approval gate</text>
+            <text x="92.0" y="526.0" font-size="11.5" fill="var(--muted)" text-anchor="middle">if the environment requires it</text>
+            <line x1="92" y1="536" x2="92" y2="568" stroke="var(--muted)" stroke-width="1.25" marker-end="url(#cb-after-grey)"/>
+            <text x="100" y="558" font-size="11.5" fill="var(--muted)">direct API call</text>
+            <rect x="1" y="572" width="182" height="34" rx="8" fill="var(--card)" stroke="var(--line-2)" stroke-width="1.25"/>
+            <text x="92.0" y="593.5" font-size="13" fill="var(--ink)" font-weight="600" text-anchor="middle">Cloud Build runs the build</text>
+            <text x="198" y="587" font-size="13" fill="var(--accent)" font-weight="600">No trigger</text>
+            <text x="198" y="603" font-size="13" fill="var(--accent)" font-weight="600">on this path</text>
+          </svg>
+          </div>
+          <figcaption>Before, each deployment took one of its project’s 600 trigger slots, and other triggers used them too. Once they ran out, the next deployment had nowhere to go. After, a deployment registers nothing in Cloud Build: the platform matches each push to its deployments and starts their builds through the API.</figcaption>
+          </figure>
+
+          <h3>The path of a push</h3>
+          <ol>
+            <li><strong>Webhook.</strong> A GitHub App installed on each repo sends every push event to a FastAPI service, which publishes it to a Pub/Sub topic. GitHub <a href="https://docs.github.com/webhooks/using-webhooks/best-practices-for-using-webhooks">wants a response within 10 seconds</a>, and this service’s work doesn’t grow with the number of deployments a push affects.</li>
+            <li><strong>Expansion.</strong> A push subscription delivers the event to the expander, which finds every deployment watching that repo and branch.</li>
+            <li><strong>One message per deployment.</strong> The expander publishes one message per matching deployment to a second topic. <a href="https://docs.cloud.google.com/pubsub/docs/ordering">Message ordering</a> is on, with the deployment ID as the ordering key, so messages for one deployment arrive one at a time and in order, while different deployments run in parallel.</li>
+            <li><strong>Approval.</strong> A second push subscription delivers each message to the build service. Each environment sets its own rules. With approvals disabled, the build starts straight away. With approvals on, the commit is marked as pending, and approvers get an email saying who committed where, with a summary from a separate code-review product. Gates can also require a PR and a minimum review score.</li>
+            <li><strong>Build.</strong> The build service starts the build with a direct Cloud Build API call (<code>builds.create</code>), using that deployment’s settings, such as its machine type. No trigger is involved.</li>
+            <li><strong>Retries.</strong> The build service rejects a message with a 4xx when a check fails, or when that deployment already has a build in progress or a release pending. Pub/Sub treats that as a failed delivery and retries about once a minute. <code>max_delivery_attempts</code> is 45, which gives a message about 45 minutes. Our builds typically take 20 to 25 minutes at most, so that’s roughly twice the time an in-progress build needs. After that, the message moves to a dead-letter queue, where someone investigates it and retries it by hand.</li>
+          </ol>
+          <p>Ordering and the in-progress check together mean two pushes to the same deployment never race. In simplified pseudo-code, the two endpoints that do the work look like this:</p>
+<pre><code># Simplified pseudo-code
+
+def expander(event):
+    for deployment in deployments_watching(event.repo, event.branch):
+        build_requests.publish(
+            {"deployment": deployment.id, "commit": event.commit},
+            ordering_key=deployment.id,
+        )
+
+def build_endpoint(message):
+    deployment = get_deployment(message["deployment"])
+
+    if deployment.is_busy() or not checks_pass(message):
+        return 4xx  # Pub/Sub retries this message
+
+    if deployment.environment.needs_approval:
+        mark_pending_and_email_approvers(message)
+    else:
+        cloud_build.create_build(deployment.build_config(message))
+    return 200</code></pre>
+
+          <h3>The decisions behind it</h3>
+          <ul>
+            <li><strong>Expand first, then order.</strong> Retries happen per deployment. If one deployment from a push fails a check, only that one retries. The cost is that later pushes to that deployment wait behind it until it’s acknowledged or dead-lettered.</li>
+            <li><strong>Rejection is how a push waits.</strong> When a deployment is busy, the build service rejects the message, and Pub/Sub holds it and tries again. The 45 counts message deliveries, not builds.</li>
+            <li><strong>Cloud Build owns the build queue.</strong> One push can start more builds than the default pool’s <a href="https://docs.cloud.google.com/build/quotas">10 to 30 concurrent builds</a>. Once <code>builds.create</code> accepts a build, queueing is Cloud Build’s job, so the platform works the same whether a push starts 5 builds or 50.</li>
+            <li><strong>Approval lives in the pipeline.</strong> Every push now passes through the platform before a build starts, so each environment’s rules apply at that point.</li>
+            <li><strong>Pub/Sub over Kafka.</strong> We were already on GCP, and Pub/Sub is managed, with queueing and retries built in. Kafka would have been another system to run, for a workload with one consumer.</li>
+            <li><strong>Push subscriptions with ordering keys.</strong> Google warns that push may not suit topics where messages are frequently published with the same ordering key. A deployment gets one message per push to its branch, which is low volume per key.</li>
+            <li><strong>Manual dead-letter triage.</strong> It’s simple to run, and it isn’t automatic yet. A message that lands there waits until someone looks at it.</li>
+          </ul>
+
+          <h3>If you build this</h3>
+          <p>These are all in Google’s docs, and they’re easy to miss:</p>
+          <ul>
+            <li>Ordering needs two settings. Enable message ordering on the subscription, and publish related messages with the same ordering key from the same region.</li>
+            <li>A push endpoint acknowledges a message only with <a href="https://docs.cloud.google.com/pubsub/docs/push">102, 200, 201, 202 or 204</a>. Any other status is a negative acknowledgement.</li>
+            <li>Redelivering one message also redelivers later messages with the same key, even acknowledged ones, so your endpoint has to handle duplicates.</li>
+            <li><code>max_delivery_attempts</code> must be between 5 and 100, and it’s <a href="https://docs.cloud.google.com/pubsub/docs/handling-failures">approximate</a>. Pub/Sub only counts attempts once the dead-letter topic and its IAM permissions are set up correctly.</li>
+            <li>Attach a subscription to the dead-letter topic. Messages published to a topic with no subscription are lost.</li>
+            <li>Order might not be preserved in the dead-letter topic, so don’t assume it when you retry from there.</li>
+            <li>Cloud Build can expire a queued build. If a build waits longer than its <a href="https://docs.cloud.google.com/build/docs/api/reference/rest/v1/projects.builds"><code>queueTtl</code></a>, its status becomes <code>EXPIRED</code>.</li>
+          </ul>
+
+          <h2>Results</h2>
+          <p>Before: one trigger per deployment, and a dev project at the 600 limit. After:</p>
+          <ul>
+            <li><strong>No trigger per deployment.</strong> Adding a deployment no longer adds a trigger, so the 600 limit no longer caps how many deployments a GCP project can hold.</li>
+            <li><strong>Scale.</strong> The platform now has 1,000+ distinct deployments across 15+ environments, added over 10+ months. That total spans many GCP projects, so it isn’t a direct comparison with the limit. None of them needs a trigger.</li>
+            <li><strong>Speed.</strong> With approvals disabled, a build starts less than 2 seconds after the push.</li>
+            <li><strong>Durability.</strong> Every push is a durable, auditable event.</li>
+            <li><strong>Order.</strong> Pushes to the same deployment are handled in order, and a failure stays with the deployment that caused it.</li>
+          </ul>
+          <blockquote><p>If every new deployment costs one cloud resource, that resource’s limit is your platform’s limit.</p></blockquote>
+
+          <h2>What I’d do differently</h2>
+          <p>Not much in the design. Once the system was working, there wasn’t a lot I’d change.</p>
+          <p>I’d want to have known about the 600 limit earlier. We chose one trigger per deployment without it in mind, and found out when dev ran into it. If you create one cloud resource per deployment, per tenant or per anything else that grows, read that resource’s limits and check what already counts against them before you commit to the design.</p>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <!-- <h2 class="footer-title">Open to platform engineering and backend roles.</h2> -->
+      <p class="footer-sub">Email is the fastest way to reach me.</p>
+      <div class="footer-links">
+        <a href="mailto:dhruvmarora6670@gmail.com">dhruvmarora6670@gmail.com</a>
+        <a href="tel:+919898333360">+91 98983-33360</a>
+        <a href="https://www.linkedin.com/in/dhruvarora2104">LinkedIn</a>
+        <a href="https://github.com/dhruvarora6670">GitHub</a>
+      </div>
+      <p class="footer-copy">© <span data-year>2026</span> Dhruv Arora</p>
+    </div>
+  </footer>
+</body>
+</html>
