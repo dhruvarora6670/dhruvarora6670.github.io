@@ -501,6 +501,8 @@ a {
 /* ---------------------------------------------------------------- Hero (first screen) */
 /* Fills the whole window at any height (tall 4K screens included), never shorter than 560px. */
 .hero {
+  position: relative;
+  isolation: isolate; /* lets the mouse trail sit above this background but below the content */
   min-height: max(560px, 100vh);
   min-height: max(560px, 100svh);
   display: flex;
@@ -508,6 +510,16 @@ a {
   padding-top: var(--header-h);
   background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
   background-size: 22px 22px;
+}
+
+/* Mouse trail, drawn by site.js: the background dots glow behind the cursor. */
+.hero-trail {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 .hero-inner {
